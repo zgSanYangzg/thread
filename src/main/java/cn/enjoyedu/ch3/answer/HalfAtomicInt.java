@@ -2,9 +2,7 @@ package cn.enjoyedu.ch3.answer;
 
 import cn.enjoyedu.tools.SleepTools;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -15,10 +13,20 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class HalfAtomicInt {
     private AtomicInteger atomicI = new AtomicInteger(0);
 
+    //时间在1秒内自旋出结果的限制
+    private long whileTileEnd=1000;
     /*请完成这个递增方法*/
     public void increament() {
-        atomicI.compareAndSet(atomicI.get(),atomicI.get()+1);
-        System.out.println(atomicI.get());
+        long start =System.currentTimeMillis();
+        boolean flag = atomicI.compareAndSet(atomicI.get(), atomicI.get() + 1);
+        long cuTime = System.currentTimeMillis()-start;
+        whileTileEnd=whileTileEnd-cuTime;
+        if (flag==false&&whileTileEnd>0){
+            System.out.println("failed retry the over time is "+whileTileEnd);
+            increament();
+        }else{
+            whileTileEnd=1000;
+        }
     }
     
     public int getCount() {
@@ -31,25 +39,19 @@ public class HalfAtomicInt {
 
     public static void main(String[] args) {
         HalfAtomicInt anInt = new HalfAtomicInt();
-        int i=500;
-        List<Thread> lst =new ArrayList<>();
-        while (i>=0){
-            Thread th1 = new Thread(new Runnable() {
+        int i=5000;
+        while (i>0){
+            new Thread(new Runnable() {
                 @Override
                 public void run() {
                     anInt.increament();
+
                 }
-            });
-            lst.add(th1);
+            }).start();
             i--;
         }
 
-        for (Thread td : lst){
-            td.start();
-            System.out.println(anInt.getCount());
-        }
-        SleepTools.ms(100);
+        SleepTools.ms(500);
         System.out.println("ret"+anInt.getCount());
-
     }
 }
