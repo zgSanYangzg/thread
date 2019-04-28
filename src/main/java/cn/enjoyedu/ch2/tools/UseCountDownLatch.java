@@ -45,7 +45,7 @@ public class UseCountDownLatch {
     public static void main(String[] args) throws InterruptedException {
         new Thread(new Runnable() {
             public void run() {
-            	SleepTools.ms(1);
+            	//SleepTools.ms(1);
                 System.out.println("Thread_"+Thread.currentThread().getId()
             			+" ready init work step 1st......");
                 latch.countDown();

@@ -9,6 +9,11 @@ import java.util.Arrays;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
+/**
+ * 请用ForkJoin实现一个归并排序：
+ * 归并排序的代码实现类为：cn.enjoyedu.ch2.forkjoin.sort.MergeSort
+ * 请将该单线程实现改造为ForkJoin实现。并调整排序数组的大小，观察数组大小不同的情况下，单线程实现和ForkJoin实现在性能上的差距。
+ */
 public class ForkjoinSort extends RecursiveTask<int[]> {
     private static Integer threadHold=80;
     private int[] sortArr;
